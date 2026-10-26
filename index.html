@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ruqyah Kuningan - Layanan & Penjadwalan Terapi Syar'iyyah</title>
+    <meta name="description" content="Aplikasi layanan terapi Ruqyah Syar'iyyah dan Thibbun Nabawi di Kuningan, Jawa Barat dengan sistem penjadwalan pasien online, tes skrining mandiri, dan direktori doa ruqyah." />
+    <meta property="og:title" content="Ruqyah Kuningan - Layanan & Penjadwalan Terapi Syar'iyyah" />
+    <meta property="og:description" content="Aplikasi layanan terapi Ruqyah Syar'iyyah dan Thibbun Nabawi di Kuningan, Jawa Barat dengan sistem penjadwalan pasien online, tes skrining mandiri, dan direktori doa ruqyah." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      // Suppress Vite HMR WebSocket connection errors in sandbox/iframe environment
+      window.addEventListener('unhandledrejection', function (event) {
+        var reason = event.reason;
+        var message = (reason && (reason.message || reason.stack || String(reason))) || '';
+        if (
+          message.includes('WebSocket') ||
+          message.includes('@vite/client') ||
+          message.includes('ws://') ||
+          message.includes('wss://')
+        ) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        }
+      });
+      window.addEventListener('error', function (event) {
+        var message = (event && (event.message || '')) || '';
+        if (
+          message.includes('WebSocket') ||
+          message.includes('@vite/client')
+        ) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        }
+      });
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-stone-50 text-stone-900 antialiased font-sans selection:bg-emerald-800 selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

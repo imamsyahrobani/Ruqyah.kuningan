@@ -1,0 +1,6 @@
+{
+  "name": "Ruqyah Kuningan - Layanan & Penjadwalan Terapi Syar'iyyah",
+  "description": "Aplikasi layanan terapi Ruqyah Syar'iyyah dan Thibbun Nabawi di Kuningan, Jawa Barat dengan sistem penjadwalan pasien online, tes skrining mandiri, dan direktori doa ruqyah.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
