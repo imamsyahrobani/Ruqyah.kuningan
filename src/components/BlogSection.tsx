@@ -221,7 +221,7 @@ export const BlogSection: React.FC<BlogSectionProps> = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {articles.map((article) => (
-              <article key={article.id} onClick={() => setSelectedArticle(article)} className="bg-white rounded-2xl border border-stone-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden flex flex-col">
+              <article key={article.id} onClick={() => { console.log('clicked', article.id); setSelectedArticle(article); }} className="bg-white rounded-2xl border border-stone-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden flex flex-col">
                 {article.coverImage ? (
                   <img src={article.coverImage} alt={article.title} className="w-full h-40 object-cover" />
                 ) : (
