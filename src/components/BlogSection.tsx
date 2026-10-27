@@ -5,9 +5,7 @@ import {
   Tag,
   Calendar,
   User,
-  ArrowLeft,
-  X,
-  Sparkles
+  ArrowLeft
 } from 'lucide-react';
 import { Article } from '../types';
 
@@ -184,29 +182,48 @@ export const BlogSection: React.FC<BlogSectionProps> = () => {
         )}
       </div>
       {selectedArticle && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b border-stone-200">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-500" />
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">{selectedArticle.category}</span>
-              </div>
-              <button onClick={() => setSelectedArticle(null)} className="p-2 rounded-lg hover:bg-stone-100 text-stone-500">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="overflow-y-auto p-6 sm:p-8">
-              <h1 className="text-xl sm:text-2xl font-bold text-stone-900 mb-2">{selectedArticle.title}</h1>
-              <div className="flex flex-wrap items-center gap-3 text-xs text-stone-500 mb-6">
-                <span className="flex items-center gap-1"><User className="w-3.5 h-3.5" />{selectedArticle.author}</span>
-                <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" />{formatDate(selectedArticle.publishedAt)}</span>
-                {selectedArticle.tags && selectedArticle.tags.length > 0 && (
-                  <span className="flex items-center gap-1"><Tag className="w-3.5 h-3.5" />{selectedArticle.tags.join(', ')}</span>
-                )}
-              </div>
-              <div>{renderContent(selectedArticle.content)}</div>
-            </div>
+        <div className="fixed inset-0 z-50 bg-white overflow-y-auto">
+          <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md border-b border-stone-200 px-4 sm:px-6 py-3 flex items-center justify-between">
+            <button
+              onClick={() => setSelectedArticle(null)}
+              className="flex items-center gap-2 text-sm font-semibold text-emerald-800 hover:text-emerald-900"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Kembali ke daftar artikel
+            </button>
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">
+              {selectedArticle.category}
+            </span>
           </div>
+          <article className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 mb-3">
+              {selectedArticle.title}
+            </h1>
+            <div className="flex flex-wrap items-center gap-3 text-xs text-stone-500 mb-6">
+              <span className="flex items-center gap-1">
+                <User className="w-3.5 h-3.5" />
+                {selectedArticle.author}
+              </span>
+              <span className="flex items-center gap-1">
+                <Calendar className="w-3.5 h-3.5" />
+                {formatDate(selectedArticle.publishedAt)}
+              </span>
+              {selectedArticle.tags && selectedArticle.tags.length > 0 && (
+                <span className="flex items-center gap-1">
+                  <Tag className="w-3.5 h-3.5" />
+                  {selectedArticle.tags.join(', ')}
+                </span>
+              )}
+            </div>
+            {selectedArticle.coverImage && (
+              <img
+                src={selectedArticle.coverImage}
+                alt={selectedArticle.title}
+                className="w-full h-56 object-cover rounded-2xl mb-6"
+              />
+            )}
+            <div>{renderContent(selectedArticle.content)}</div>
+          </article>
         </div>
       )}
     </section>

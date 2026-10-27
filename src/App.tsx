@@ -12,6 +12,7 @@ import { EducationSection } from './components/EducationSection';
 import { TherapistSection } from './components/TherapistSection';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { AdminModal } from './components/AdminModal';
+import { LoginModal } from './components/LoginModal';
 import { Footer } from './components/Footer';
 import { Service, Therapist, Appointment } from './types';
 import { MessageSquare, PhoneCall } from 'lucide-react';
@@ -19,6 +20,8 @@ import { MessageSquare, PhoneCall } from 'lucide-react';
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('beranda');
   const [isAdminOpen, setIsAdminOpen] = useState<boolean>(false);
+  const [adminToken, setAdminToken] = useState<string | null>(() => sessionStorage.getItem('adminToken'));
+  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   const [services, setServices] = useState<Service[]>([]);
   const [therapists, setTherapists] = useState<Therapist[]>([]);
   const [districts, setDistricts] = useState<string[]>([]);
@@ -65,7 +68,27 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleOpenAdmin = () => {
+    if (adminToken) {
+      setIsAdminOpen(true);
+    } else {
+      setIsLoginOpen(true);
+    }
+  };
+
+  const handleLoginSuccess = (token: string) => {
+    setAdminToken(token);
+    setIsLoginOpen(false);
+    setIsAdminOpen(true);
+  };
+
+  const handleLogoutAdmin = () => {
+    sessionStorage.removeItem('adminToken');
+    setAdminToken(null);
+    setIsAdminOpen(false);
+  };
   const handleScheduleWithQuizResult = (symptomsText: string) => {
+
     setInitialSymptomsForBooking(symptomsText);
     setActiveTab('jadwal');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -80,7 +103,7 @@ export default function App() {
           setActiveTab(tab);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
-        onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenAdmin={handleOpenAdmin}
         onOpenTracking={() => {
           setActiveTab('tracking');
           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -208,6 +231,13 @@ export default function App() {
       <AdminModal
         isOpen={isAdminOpen}
         onClose={() => setIsAdminOpen(false)}
+        token={adminToken}
+        onLogout={handleLogoutAdmin}
+      />
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onSuccess={handleLoginSuccess}
       />
 
       {/* Footer */}
@@ -220,7 +250,7 @@ export default function App() {
           setActiveTab('tracking');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
-        onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenAdmin={handleOpenAdmin}
       />
     </div>
   );

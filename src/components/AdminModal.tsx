@@ -19,12 +19,16 @@ import { AdminArticlesPanel } from './AdminArticlesPanel';
 interface AdminModalProps {
   isOpen: boolean;
   onClose: () => void;
+  token: string | null;
+  onLogout: () => void;
   onDataUpdated?: () => void;
 }
 
 export const AdminModal: React.FC<AdminModalProps> = ({
   isOpen,
   onClose,
+  token,
+  onLogout,
   onDataUpdated
 }) => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -78,7 +82,10 @@ export const AdminModal: React.FC<AdminModalProps> = ({
     try {
       const res = await fetch(`/api/appointments/${editingAppointment.id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token || ''}`
+        },
         body: JSON.stringify({
           status: statusInput,
           therapistNotes: notesInput
@@ -107,7 +114,10 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const handleDelete = async (id: string) => {
     if (!window.confirm('Apakah Anda yakin ingin menghapus jadwal pasien ini?')) return;
     try {
-      const res = await fetch(`/api/appointments/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/appointments/${id}`, { 
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token || ''}` }
+      });
       if (res.ok) {
         setAppointments((prev) => prev.filter((a) => a.id !== id));
         if (editingAppointment?.id === id) {
@@ -151,6 +161,13 @@ export const AdminModal: React.FC<AdminModalProps> = ({
             </p>
           </div>
           <button
+            onClick={onLogout}
+            className="p-1.5 rounded-lg text-stone-400 hover:text-white hover:bg-stone-800 transition-colors mr-1"
+            title="Logout"
+          >
+            <span className="text-xs">Logout</span>
+          </button>
+          <button
             onClick={onClose}
             className="p-1.5 rounded-lg text-stone-400 hover:text-white hover:bg-stone-800 transition-colors"
           >
@@ -180,7 +197,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
 
         {adminTab === 'artikel' ? (
           <div className="flex-1 overflow-y-auto">
-            <AdminArticlesPanel />
+            <AdminArticlesPanel token={token} />
           </div>
         ) : (
           <React.Fragment>

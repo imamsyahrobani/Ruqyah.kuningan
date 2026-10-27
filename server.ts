@@ -11,6 +11,34 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 app.use(express.json());
 
+// Admin auth (in-memory token store)
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'ruqyahkuningan2026';
+const adminTokens = new Set<string>();
+
+function generateToken(): string {
+  return Math.random().toString(36).slice(2) + Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+
+function requireAdmin(req: Request, res: Response, next: () => void): void {
+  const auth = req.headers.authorization || '';
+  const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+  if (!token || !adminTokens.has(token)) {
+    res.status(401).json({ success: false, message: 'Akses ditolak. Silakan login sebagai terapis.' });
+    return;
+  }
+  next();
+}
+
+app.post('/api/admin/login', (req: Request, res: Response) => {
+  const { password } = req.body || {};
+  if (password !== ADMIN_PASSWORD) {
+    return res.status(401).json({ success: false, message: 'Password salah' });
+  }
+  const token = generateToken();
+  adminTokens.add(token);
+  res.json({ success: true, token });
+});
+
 // Ensure data directory exists
 const DATA_DIR = path.join(__dirname, 'data');
 const APPOINTMENTS_FILE = path.join(DATA_DIR, 'appointments.json');
@@ -735,7 +763,7 @@ app.post('/api/appointments', (req: Request, res: Response) => {
 });
 
 // Update appointment (Status, therapist notes, reschedule)
-app.patch('/api/appointments/:id', (req: Request, res: Response) => {
+app.patch('/api/appointments/:id', requireAdmin, (req: Request, res: Response) => {
   const { id } = req.params;
   const { status, therapistNotes, date, slot } = req.body;
 
@@ -758,7 +786,7 @@ app.patch('/api/appointments/:id', (req: Request, res: Response) => {
 });
 
 // Delete appointment
-app.delete('/api/appointments/:id', (req: Request, res: Response) => {
+app.delete('/api/appointments/:id', requireAdmin, (req: Request, res: Response) => {
   const { id } = req.params;
   const appointments = getAppointments();
   const filtered = appointments.filter(a => a.id !== id && a.bookingCode !== id);
@@ -859,7 +887,7 @@ app.get('/api/articles/:slug', (req: Request, res: Response) => {
   res.json({ success: true, data: article });
 });
 
-app.post('/api/articles', (req: Request, res: Response) => {
+app.post('/api/articles', requireAdmin, (req: Request, res: Response) => {
   const { title, excerpt, content, category, author, coverImage, tags } = req.body;
   if (!title || !content) {
     return res.status(400).json({ success: false, message: 'Judul dan konten artikel wajib diisi' });
@@ -883,7 +911,7 @@ app.post('/api/articles', (req: Request, res: Response) => {
   res.status(201).json({ success: true, data: newArticle });
 });
 
-app.patch('/api/articles/:id', (req: Request, res: Response) => {
+app.patch('/api/articles/:id', requireAdmin, (req: Request, res: Response) => {
   const { id } = req.params;
   const articles = getArticles();
   const index = articles.findIndex(a => a.id === id || a.slug === id);
@@ -903,7 +931,7 @@ app.patch('/api/articles/:id', (req: Request, res: Response) => {
   res.json({ success: true, data: articles[index] });
 });
 
-app.delete('/api/articles/:id', (req: Request, res: Response) => {
+app.delete('/api/articles/:id', requireAdmin, (req: Request, res: Response) => {
   const { id } = req.params;
   const articles = getArticles();
   const filtered = articles.filter(a => a.id !== id && a.slug !== id);

@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit, X, Save } from 'lucide-react';
 import { Article } from '../types';
 
-export const AdminArticlesPanel: React.FC = () => {
+interface AdminArticlesPanelProps {
+  token: string | null;
+}
+
+export const AdminArticlesPanel: React.FC<AdminArticlesPanelProps> = ({ token }) => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -78,7 +82,10 @@ export const AdminArticlesPanel: React.FC = () => {
       const method = editingId ? 'PATCH' : 'POST';
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token || ''}`
+        },
         body: JSON.stringify(payload)
       });
       const data = await res.json();
@@ -98,7 +105,10 @@ export const AdminArticlesPanel: React.FC = () => {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Hapus artikel ini?')) return;
     try {
-      const res = await fetch(`/api/articles/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/articles/${id}`, { 
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token || ''}` }
+      });
       if (res.ok) {
         setArticles((prev) => prev.filter((a) => a.id !== id));
       }
