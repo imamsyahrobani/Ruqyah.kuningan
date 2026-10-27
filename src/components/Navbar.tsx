@@ -73,6 +73,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               Ayat & Doa Ruqyah
             </button>
+            <button
+              onClick={() => setActiveTab('blog')}
+              className={`hover:text-emerald-900 transition-colors whitespace-nowrap shrink-0 pb-1 border-b-2 ${
+                activeTab === 'blog' ? 'border-emerald-800 text-emerald-950 font-semibold' : 'border-transparent'
+              }`}
+            >
+              Artikel & Blog
+            </button>
+
           </nav>
 
           {/* Zone 3: 1 primary action + subtle utility controls */}

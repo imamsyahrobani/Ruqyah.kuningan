@@ -77,6 +77,20 @@ export interface DoaItem {
   audioUrl?: string;
 }
 
+export interface Article {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  author: string;
+  coverImage?: string;
+  publishedAt: string;
+  updatedAt?: string;
+  tags?: string[];
+}
+
 export interface Testimonial {
   id: string;
   name: string;

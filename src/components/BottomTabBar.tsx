@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Sparkles, CalendarCheck, HelpCircle, BookOpen } from 'lucide-react';
+import { Home, Sparkles, CalendarCheck, HelpCircle, BookOpen, Newspaper } from 'lucide-react';
 
 interface BottomTabBarProps {
   activeTab: string;
@@ -12,12 +12,13 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({ activeTab, setActive
     { id: 'layanan', label: 'Layanan', icon: Sparkles },
     { id: 'jadwal', label: 'Jadwal', icon: CalendarCheck },
     { id: 'tes', label: 'Tes Gejala', icon: HelpCircle },
-    { id: 'doa', label: 'Doa Syar’i', icon: BookOpen }
+    { id: 'doa', label: 'Doa Syar’i', icon: BookOpen },
+    { id: 'blog', label: 'Artikel', icon: Newspaper }
   ];
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200">
-      <div className="grid grid-cols-5 items-center h-16 max-w-lg mx-auto px-1">
+      <div className="grid grid-cols-6 items-center h-16 max-w-lg mx-auto px-1">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;

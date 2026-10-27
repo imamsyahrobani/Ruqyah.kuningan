@@ -7,6 +7,7 @@ import { BookingSection } from './components/BookingSection';
 import { TrackingSection } from './components/TrackingSection';
 import { QuizSection } from './components/QuizSection';
 import { DoaDzikirSection } from './components/DoaDzikirSection';
+import { BlogSection } from './components/BlogSection';
 import { EducationSection } from './components/EducationSection';
 import { TherapistSection } from './components/TherapistSection';
 import { TestimonialsSection } from './components/TestimonialsSection';
@@ -166,6 +167,8 @@ export default function App() {
         )}
 
         {activeTab === 'doa' && <DoaDzikirSection />}
+
+        {activeTab === 'blog' && <BlogSection />}
 
         {activeTab === 'tracking' && (
           <TrackingSection

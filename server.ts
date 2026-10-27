@@ -103,6 +103,122 @@ function saveAppointments(data: any[]): void {
   fs.writeFileSync(APPOINTMENTS_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
+// Articles (Blog) storage
+const ARTICLES_FILE = path.join(DATA_DIR, 'articles.json');
+
+const initialArticles = [
+  {
+    id: 'art-1',
+    slug: 'tanda-tanda-gangguan-ruqyah',
+    title: 'Tanda-Tanda Gangguan Jin, Sihir, dan ‘Ain yang Sering Diabaikan',
+    excerpt: 'Kenali indikasi awal gangguan rohani seperti mimpi buruk berulang, was-was ekstrem, dan sakit fisik tanpa sebab medis, serta langkah penanganan syar’i.',
+    category: 'Edukasi',
+    author: 'Ustadz Imam Syahrobani, M.Pd',
+    publishedAt: '2026-10-20T08:00:00.000Z',
+    tags: ['ruqyah', 'sihir', 'ain', 'was-was'],
+    content: `## Pendahuluan
+
+Banyak orang mengalami gangguan rohani tanpa menyadarinya. Tanda-tanda seperti mimpi buruk berulang, rasa was-was ekstrem saat beribadah, hingga sakit fisik yang tidak ditemukan penyebab medisnya, sering diabaikan.
+
+## Tanda-Tanda Umum
+
+1. **Mimpi buruk berulang** — didatangi binatang buas, dikejar, atau jatuh dari tempat tinggi.
+2. **Was-was ekstrem** — keraguan berlebihan saat sholat, wudhu, atau membaca Al-Qur’an.
+3. **Sakit fisik tanpa sebab medis** — sakit tengkuk, dada sesak, atau kesemutan mendadak.
+4. **Perubahan perilaku** — mudah marah, malas ibadah, atau menjauh dari keluarga.
+5. **Gangguan di rumah** — bunyi aneh tengah malam, anggota keluarga sakit bergantian.
+
+## Langkah Penanganan Syar’i
+
+- Perbanyak istighfar dan sholat fardhu tepat waktu.
+- Rutinkan dzikir pagi dan petang serta membaca Ayat Kursi setelah sholat.
+- Mandi dengan air yang dibacakan ruqyah atau air daun bidara.
+- Konsultasikan dengan terapis ruqyah bersanad bila gejala menetap.
+
+## Penutup
+
+Gangguan rohani bukan aib. Dengan taubat, dzikir, dan ruqyah syar’iyyah, insya Allah kesembuhan akan datang dengan izin Allah Ta’ala.`
+  },
+  {
+    id: 'art-2',
+    slug: 'cara-ruqyah-mandiri-di-rumah',
+    title: 'Cara Ruqyah Mandiri di Rumah Sesuai Sunnah',
+    excerpt: 'Panduan praktis meruqyah diri dan keluarga dengan ayat-ayat Al-Qur’an dan air ruqyah, tanpa ketergantungan pada terapis.',
+    category: 'Panduan',
+    author: 'Ustadz Imam Syahrobani, M.Pd',
+    publishedAt: '2026-10-22T09:30:00.000Z',
+    tags: ['ruqyah mandiri', 'air bidara', 'dzikir'],
+    content: `## Persiapan
+
+1. Berwudhu dengan sempurna.
+2. Pilih waktu yang tenang, misalnya setelah sholat Subuh atau sebelum tidur.
+3. Siapkan air putih bersih dalam wadah.
+
+## Bacaan Ruqyah
+
+- Al-Fatihah (7x)
+- Ayat Kursi (3x)
+- Al-Ikhlas, Al-Falaq, An-Nas (3x masing-masing)
+- Doa perlindungan: *"A'udzu bikalimatillahit-tammati min kulli syaithanin wa hammatin wa min kulli 'ainin lammah."*
+
+## Praktik
+
+- Baca ayat-ayat di atas sambil meniup ke telapak tangan, lalu usapkan ke seluruh tubuh.
+- Tiupkan juga ke air, lalu minum dan mandi dengan air tersebut.
+- Rutinkan selama 7 hari berturut-turut.
+
+## Catatan
+
+Ruqyah mandiri adalah sebab. Kesembuhan mutlak hanya dari Allah. Jika gejala berat menetap, segera jadwalkan sesi ruqyah syar’iyyah dengan terapis bersanad.`
+  },
+  {
+    id: 'art-3',
+    slug: 'perbedaan-ruqyah-syar-iyyah-dan-dukun',
+    title: 'Perbedaan Ruqyah Syar’iyyah dan Praktik Dukun/Klenik',
+    excerpt: 'Kenali ciri-ciri ruqyah yang sesuai Sunnah versus praktik perdukunan yang dilarang, agar tidak terjerumus syirik.',
+    category: 'Tauhid',
+    author: 'Ustadz Imam Syahrobani, M.Pd',
+    publishedAt: '2026-10-24T10:00:00.000Z',
+    tags: ['tauhid', 'syirik', 'edukasi'],
+    content: `## Ruqyah Syar’iyyah (Sunnah)
+
+- Menggunakan ayat-ayat Al-Qur’an dan doa Nabawiyyah.
+- Bacaan jelas, terdengar, tanpa komat-kamit.
+- Meyakini ruqyah hanya sebab, kesembuhan dari Allah.
+- Pasien akhwat didampingi mahram, menjaga aurat.
+- Mengajarkan taubat dan membuang jimat.
+
+## Praktik Dukun/Klenik (Haram)
+
+- Meminta syarat ganjil (ayam cemani, kain kafan, sesajen).
+- Memberikan jimat, rajah, keris bertuah.
+- Mengklaim tahu masa depan atau menuduh orang lain.
+- Membaca mantra bisik-bisik tidak jelas.
+- Menyuruh ritual bertentangan syariat.
+
+## Kesimpulan
+
+Pastikan terapis yang Anda pilih berlandaskan tuntunan Rasulullah ﷺ dan fatwa ulama Ahlussunnah, tanpa menyekutukan Allah.`
+  }
+];
+
+if (!fs.existsSync(ARTICLES_FILE)) {
+  fs.writeFileSync(ARTICLES_FILE, JSON.stringify(initialArticles, null, 2), 'utf-8');
+}
+
+function getArticles(): any[] {
+  try {
+    const raw = fs.readFileSync(ARTICLES_FILE, 'utf-8');
+    return JSON.parse(raw);
+  } catch (err) {
+    return initialArticles;
+  }
+}
+
+function saveArticles(data: any[]): void {
+  fs.writeFileSync(ARTICLES_FILE, JSON.stringify(data, null, 2), 'utf-8');
+}
+
 // Master data
 const SERVICES = [
   {
@@ -713,6 +829,91 @@ app.post('/api/quiz-analyze', (req: Request, res: Response) => {
 app.get('/api/doa-dzikir', (req: Request, res: Response) => {
   res.json({ success: true, data: DOA_DZIKIR });
 });
+
+// Articles (Blog) endpoints
+app.get('/api/articles', (req: Request, res: Response) => {
+  const { category, search } = req.query;
+  let list = getArticles();
+  if (category && typeof category === 'string' && category !== 'all') {
+    list = list.filter(a => a.category === category);
+  }
+  if (search && typeof search === 'string') {
+    const q = search.toLowerCase();
+    list = list.filter(a =>
+      a.title.toLowerCase().includes(q) ||
+      a.excerpt.toLowerCase().includes(q) ||
+      (a.tags || []).some((t: string) => t.toLowerCase().includes(q))
+    );
+  }
+  list.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+  res.json({ success: true, total: list.length, data: list });
+});
+
+app.get('/api/articles/:slug', (req: Request, res: Response) => {
+  const { slug } = req.params;
+  const list = getArticles();
+  const article = list.find(a => a.slug === slug || a.id === slug);
+  if (!article) {
+    return res.status(404).json({ success: false, message: 'Artikel tidak ditemukan' });
+  }
+  res.json({ success: true, data: article });
+});
+
+app.post('/api/articles', (req: Request, res: Response) => {
+  const { title, excerpt, content, category, author, coverImage, tags } = req.body;
+  if (!title || !content) {
+    return res.status(400).json({ success: false, message: 'Judul dan konten artikel wajib diisi' });
+  }
+  const articles = getArticles();
+  const slug = (title as string).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + Date.now().toString(36);
+  const newArticle = {
+    id: 'art-' + Date.now().toString(36),
+    slug,
+    title,
+    excerpt: excerpt || (content as string).slice(0, 160),
+    content,
+    category: category || 'Umum',
+    author: author || 'Ustadz Imam Syahrobani, M.Pd',
+    coverImage: coverImage || '',
+    publishedAt: new Date().toISOString(),
+    tags: Array.isArray(tags) ? tags : [],
+  };
+  articles.unshift(newArticle);
+  saveArticles(articles);
+  res.status(201).json({ success: true, data: newArticle });
+});
+
+app.patch('/api/articles/:id', (req: Request, res: Response) => {
+  const { id } = req.params;
+  const articles = getArticles();
+  const index = articles.findIndex(a => a.id === id || a.slug === id);
+  if (index === -1) {
+    return res.status(404).json({ success: false, message: 'Artikel tidak ditemukan' });
+  }
+  const { title, excerpt, content, category, author, coverImage, tags } = req.body;
+  if (title !== undefined) articles[index].title = title;
+  if (excerpt !== undefined) articles[index].excerpt = excerpt;
+  if (content !== undefined) articles[index].content = content;
+  if (category !== undefined) articles[index].category = category;
+  if (author !== undefined) articles[index].author = author;
+  if (coverImage !== undefined) articles[index].coverImage = coverImage;
+  if (tags !== undefined) articles[index].tags = tags;
+  articles[index].updatedAt = new Date().toISOString();
+  saveArticles(articles);
+  res.json({ success: true, data: articles[index] });
+});
+
+app.delete('/api/articles/:id', (req: Request, res: Response) => {
+  const { id } = req.params;
+  const articles = getArticles();
+  const filtered = articles.filter(a => a.id !== id && a.slug !== id);
+  if (filtered.length === articles.length) {
+    return res.status(404).json({ success: false, message: 'Artikel tidak ditemukan' });
+  }
+  saveArticles(filtered);
+  res.json({ success: true, message: 'Artikel berhasil dihapus' });
+});
+
 
 // Setup Vite or static serving
 async function startServer() {

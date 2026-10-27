@@ -77,6 +77,11 @@ export const Footer: React.FC<FooterProps> = ({
                   Ayat & Doa Ruqyah Syar'i
                 </button>
               </li>
+              <li>
+                <button onClick={() => onNavigate('blog')} className="hover:text-amber-300 transition-colors">
+                  Artikel & Blog Ruqyah
+                </button>
+              </li>
             </ul>
           </div>
 
