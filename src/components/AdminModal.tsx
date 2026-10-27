@@ -10,9 +10,11 @@ import {
   Trash2,
   RefreshCw,
   MessageSquare,
-  AlertCircle
+  AlertCircle,
+  Plus
 } from 'lucide-react';
-import { Appointment } from '../types';
+import { Appointment, Article } from '../types';
+import { AdminArticlesPanel } from './AdminArticlesPanel';
 
 interface AdminModalProps {
   isOpen: boolean;
@@ -28,6 +30,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [adminTab, setAdminTab] = useState<'jadwal' | 'artikel'>('jadwal');
   const [searchQuery, setSearchQuery] = useState<string>('');
   
   // Selected appointment for detail / edit
@@ -154,6 +157,33 @@ export const AdminModal: React.FC<AdminModalProps> = ({
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {/* Admin Tab Bar */}
+        <div className="flex items-center gap-1 p-2 bg-stone-100 border-b border-stone-200 shrink-0">
+          <button
+            onClick={() => setAdminTab('jadwal')}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+              adminTab === 'jadwal' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            Jadwal Pasien
+          </button>
+          <button
+            onClick={() => setAdminTab('artikel')}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+              adminTab === 'artikel' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            Artikel Blog
+          </button>
+        </div>
+
+        {adminTab === 'artikel' ? (
+          <div className="flex-1 overflow-y-auto">
+            <AdminArticlesPanel />
+          </div>
+        ) : (
+          <React.Fragment>
 
         {/* Stats Row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-3 sm:p-4 bg-stone-100 border-b border-stone-200 text-xs shrink-0">
@@ -424,6 +454,8 @@ export const AdminModal: React.FC<AdminModalProps> = ({
             )}
           </div>
         </div>
+          </React.Fragment>
+        )}
       </div>
     </div>
   );
