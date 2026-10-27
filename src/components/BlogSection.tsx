@@ -5,7 +5,15 @@ import {
   Tag,
   Calendar,
   User,
-  ArrowLeft
+  ArrowLeft,
+  Facebook,
+  Instagram,
+  Twitter,
+  MessageSquare,
+  Link2,
+  Copy,
+  Check,
+  Share2
 } from 'lucide-react';
 import { Article } from '../types';
 
@@ -19,6 +27,7 @@ export const BlogSection: React.FC<BlogSectionProps> = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [copiedLink, setCopiedLink] = useState<boolean>(false);
 
   const categories = ['all', ...Array.from(new Set(articles.map((a) => a.category)))];
 
@@ -38,14 +47,24 @@ export const BlogSection: React.FC<BlogSectionProps> = () => {
       })
       .catch((err) => console.error('Failed to load articles:', err))
       .finally(() => setLoading(false));
-  };
-
   useEffect(() => {
     const t = setTimeout(() => {
       fetchArticles(activeCategory, searchQuery);
     }, 300);
     return () => clearTimeout(t);
   }, [activeCategory, searchQuery]);
+
+
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('artikel');
+    if (slug && articles.length > 0) {
+      const found = articles.find((a) => a.slug === slug || a.id === slug);
+      if (found) setSelectedArticle(found);
+    }
+  }, [articles]);
 
   const formatDate = (iso: string) => {
     try {
@@ -127,6 +146,52 @@ export const BlogSection: React.FC<BlogSectionProps> = () => {
     flushList();
     return elements;
   };
+
+  const getShareUrl = () => {
+    if (!selectedArticle) return window.location.href;
+    const url = new URL(window.location.href);
+    url.searchParams.set('artikel', selectedArticle.slug);
+    return url.toString();
+  };
+
+  const shareUrl = getShareUrl();
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
+  const handleNativeShare = async () => {
+    if (typeof navigator === 'undefined' || typeof navigator.share !== 'function' || !selectedArticle) return;
+    try {
+      await navigator.share({
+        title: selectedArticle.title,
+        text: selectedArticle.excerpt,
+        url: shareUrl
+      });
+    } catch (err) {
+      // user cancelled or unsupported
+    }
+  };
+
+  // Update URL when opening/closing article
+  useEffect(() => {
+    if (!selectedArticle) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set('artikel', selectedArticle.slug);
+    window.history.replaceState({}, '', url.toString());
+    return () => {
+      const u = new URL(window.location.href);
+      u.searchParams.delete('artikel');
+      window.history.replaceState({}, '', u.toString());
+    };
+  }, [selectedArticle]);
+
 
   return (
     <section id="blog-section" className="py-12 sm:py-16 bg-stone-50 border-b border-stone-200">
@@ -223,6 +288,65 @@ export const BlogSection: React.FC<BlogSectionProps> = () => {
               />
             )}
             <div>{renderContent(selectedArticle.content)}</div>
+            <div className="mt-8 pt-6 border-t border-stone-200">
+              <h3 className="text-sm font-bold text-stone-900 mb-3 flex items-center gap-2">
+                <Share2 className="w-4 h-4 text-emerald-700" />
+                Bagikan Artikel
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                <a
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#1877F2] text-white text-xs font-semibold hover:opacity-90"
+                >
+                  <Facebook className="w-4 h-4" /> Facebook
+                </a>
+                <a
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(selectedArticle.title)}&url=${encodeURIComponent(shareUrl)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-black text-white text-xs font-semibold hover:opacity-90"
+                >
+                  <Twitter className="w-4 h-4" /> X (Twitter)
+                </a>
+                <a
+                  href={`https://www.threads.net/intent/post?text=${encodeURIComponent(selectedArticle.title + ' ' + shareUrl)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-stone-900 text-white text-xs font-semibold hover:opacity-90"
+                >
+                  <MessageSquare className="w-4 h-4" /> Threads
+                </a>
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(selectedArticle.title + ' ' + shareUrl)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#25D366] text-white text-xs font-semibold hover:opacity-90"
+                >
+                  <MessageSquare className="w-4 h-4" /> WhatsApp
+                </a>
+                <button
+                  onClick={handleCopyLink}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl border border-stone-300 text-stone-700 text-xs font-semibold hover:bg-stone-50"
+                >
+                  {copiedLink ? <Check className="w-4 h-4 text-emerald-700" /> : <Copy className="w-4 h-4" />}
+                  {copiedLink ? 'Tautan Disalin' : 'Salin Tautan'}
+                </button>
+                {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
+                  <button
+                    onClick={handleNativeShare}
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl border border-stone-300 text-stone-700 text-xs font-semibold hover:bg-stone-50"
+                  >
+                    <Share2 className="w-4 h-4" /> Bagikan (Instagram/dll)
+                  </button>
+                )}
+              </div>
+              <p className="text-[10px] text-stone-400 mt-2">
+                Instagram tidak mendukung share link langsung; gunakan "Salin Tautan" atau "Bagikan" untuk menempel di Instagram.
+              </p>
+            </div>
+
           </article>
         </div>
       )}
