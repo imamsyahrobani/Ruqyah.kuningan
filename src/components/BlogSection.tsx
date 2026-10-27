@@ -47,6 +47,8 @@ export const BlogSection: React.FC<BlogSectionProps> = () => {
       })
       .catch((err) => console.error('Failed to load articles:', err))
       .finally(() => setLoading(false));
+  };
+
   useEffect(() => {
     const t = setTimeout(() => {
       fetchArticles(activeCategory, searchQuery);
@@ -54,8 +56,6 @@ export const BlogSection: React.FC<BlogSectionProps> = () => {
     return () => clearTimeout(t);
   }, [activeCategory, searchQuery]);
 
-
-  };
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -221,7 +221,7 @@ export const BlogSection: React.FC<BlogSectionProps> = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {articles.map((article) => (
-              <article key={article.id} onClick={() => { console.log('clicked', article.id); setSelectedArticle(article); }} className="bg-white rounded-2xl border border-stone-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden flex flex-col">
+              <article key={article.id} onClick={() => setSelectedArticle(article)} className="bg-white rounded-2xl border border-stone-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden flex flex-col">
                 {article.coverImage ? (
                   <img src={article.coverImage} alt={article.title} className="w-full h-40 object-cover" />
                 ) : (
@@ -287,7 +287,7 @@ export const BlogSection: React.FC<BlogSectionProps> = () => {
                 className="w-full h-56 object-cover rounded-2xl mb-6"
               />
             )}
-            <div>DEBUG: {selectedArticle.title}</div>
+            <div>{renderContent(selectedArticle.content)}</div>
             <div className="mt-8 pt-6 border-t border-stone-200">
               <h3 className="text-sm font-bold text-stone-900 mb-3 flex items-center gap-2">
                 <Share2 className="w-4 h-4 text-emerald-700" />
