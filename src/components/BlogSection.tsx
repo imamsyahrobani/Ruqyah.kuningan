@@ -247,7 +247,7 @@ export const BlogSection: React.FC<BlogSectionProps> = () => {
         )}
       </div>
       {selectedArticle && (
-        <div className="fixed inset-0 z-50 bg-white overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-white overflow-y-auto" style={{ backgroundColor: '#ffffff' }}>
           <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md border-b border-stone-200 px-4 sm:px-6 py-3 flex items-center justify-between">
             <button
               onClick={() => setSelectedArticle(null)}
@@ -287,7 +287,7 @@ export const BlogSection: React.FC<BlogSectionProps> = () => {
                 className="w-full h-56 object-cover rounded-2xl mb-6"
               />
             )}
-            <div>{renderContent(selectedArticle.content)}</div>
+            <div>DEBUG: {selectedArticle.title}</div>
             <div className="mt-8 pt-6 border-t border-stone-200">
               <h3 className="text-sm font-bold text-stone-900 mb-3 flex items-center gap-2">
                 <Share2 className="w-4 h-4 text-emerald-700" />
